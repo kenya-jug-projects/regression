@@ -1,4 +1,4 @@
-package com.kenyajug.regression.entities;
+package com.kenyajug.regression.logger.model;
 /*
  * MIT License
  *
@@ -22,7 +22,7 @@ package com.kenyajug.regression.entities;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public record LogsMetadata(
+public record LogMetadata(
         String uuid,
         String logId,
         String metadataType,

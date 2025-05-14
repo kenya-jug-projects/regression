@@ -1,32 +1,8 @@
 package com.kenyajug.regression.persistence_tests;
-/*
- * MIT License
- *
- * Copyright (c) 2025 Kenya JUG
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-import com.kenyajug.regression.entities.AppLog;
-import com.kenyajug.regression.repository.AppLogRepository;
+import com.kenyajug.regression.logger.model.Log;
+import com.kenyajug.regression.logger.repository.LogRepository;
 import com.kenyajug.regression.utils.DateTimeUtils;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,11 +14,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class AppLogRepositoryTest {
+public class LogRepositoryTest {
     @Autowired
     private JdbcClient jdbcClient;
     @Autowired
-    private AppLogRepository repository;
+    private LogRepository repository;
     private final String appId = "APP_UUID1";
     @AfterEach
     public void cleanUp(){
@@ -53,7 +29,7 @@ public class AppLogRepositoryTest {
     }
     @Test
     public void shouldSaveObjectTest(){
-        var entity = new AppLog(
+        var entity = new Log(
                 "UUID1",
                 DateTimeUtils.convertZonedUTCTimeStringToLocalDateTime("2025-08-11 11:09:22 UTC"),
                 "WARN",
@@ -75,7 +51,7 @@ public class AppLogRepositoryTest {
     }
     @Test
     public void shouldFindAllObjectsTest(){
-        var entity1 = new AppLog(
+        var entity1 = new Log(
                 "UUID1",
                 DateTimeUtils.convertZonedUTCTimeStringToLocalDateTime("2025-08-11 11:09:22 UTC"),
                 "WARN",
@@ -83,7 +59,7 @@ public class AppLogRepositoryTest {
                 "Chrome LTS  version 132.0.6834.223",
                 "Object not found exception"
         );
-        var entity2 = new AppLog(
+        var entity2 = new Log(
                 "UUID2",
                 DateTimeUtils.convertZonedUTCTimeStringToLocalDateTime("2025-08-11 11:09:22 UTC"),
                 "WARN",
@@ -96,7 +72,7 @@ public class AppLogRepositoryTest {
         var users = repository.findAll();
         assertThat(users).isNotEmpty();
         var persistedOptional = users.stream()
-                .sorted(Comparator.comparing(AppLog::uuid))
+                .sorted(Comparator.comparing(Log::uuid))
                 .findFirst();
         assertThat(persistedOptional).isNotEmpty();
         var persisted = persistedOptional.get();
@@ -110,7 +86,7 @@ public class AppLogRepositoryTest {
     }
     @Test
     public void shouldDeleteByIdTest(){
-        var entity = new AppLog(
+        var entity = new Log(
                 "UUID1",
                 DateTimeUtils.convertZonedUTCTimeStringToLocalDateTime("2025-08-11 11:09:22 UTC"),
                 "WARN",
@@ -130,7 +106,7 @@ public class AppLogRepositoryTest {
     }
     @Test
     public void shouldDeleteAllObjectsTest(){
-        var entity1 = new AppLog(
+        var entity1 = new Log(
                 "UUID1",
                 DateTimeUtils.convertZonedUTCTimeStringToLocalDateTime("2025-08-11 11:09:22 UTC"),
                 "WARN",
@@ -138,7 +114,7 @@ public class AppLogRepositoryTest {
                 "Chrome LTS  version 132.0.6834.223",
                 "Object not found exception"
         );
-        var entity2 = new AppLog(
+        var entity2 = new Log(
                 "UUID2",
                 DateTimeUtils.convertZonedUTCTimeStringToLocalDateTime("2025-08-11 11:09:22 UTC"),
                 "WARN",
@@ -151,7 +127,7 @@ public class AppLogRepositoryTest {
         var entities = repository.findAll();
         assertThat(entities).isNotEmpty();
         var persistedOptional = entities.stream()
-                .sorted(Comparator.comparing(AppLog::uuid))
+                .sorted(Comparator.comparing(Log::uuid))
                 .findFirst();
         assertThat(persistedOptional).isNotEmpty();
         var persisted = persistedOptional.get();
@@ -163,7 +139,7 @@ public class AppLogRepositoryTest {
     }
     @Test
     public void shouldCheckObjectExistenceById_Test(){
-        var entity = new AppLog(
+        var entity = new Log(
                 "UUID1",
                 DateTimeUtils.convertZonedUTCTimeStringToLocalDateTime("2025-08-11 11:09:22 UTC"),
                 "WARN",
@@ -180,7 +156,7 @@ public class AppLogRepositoryTest {
     }
     @Test
     public void shouldUpdateObjectTest(){
-        var entity = new AppLog(
+        var entity = new Log(
                 "UUID1",
                 DateTimeUtils.convertZonedUTCTimeStringToLocalDateTime("2025-08-11 11:09:22 UTC"),
                 "WARN",
@@ -191,7 +167,7 @@ public class AppLogRepositoryTest {
         repository.save(entity);
         var exists = repository.existsById(entity.uuid());
         assertThat(exists).isTrue();
-        var entityUpdated = new AppLog(
+        var entityUpdated = new Log(
                 "UUID1",
                 DateTimeUtils.convertZonedUTCTimeStringToLocalDateTime("2025-08-11 11:09:22 UTC"),
                 "ERROR",

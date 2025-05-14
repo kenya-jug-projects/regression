@@ -1,31 +1,8 @@
 package com.kenyajug.regression.persistence_tests;
-/*
- * MIT License
- *
- * Copyright (c) 2025 Kenya JUG
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-import com.kenyajug.regression.entities.LogsMetadata;
-import com.kenyajug.regression.repository.LogsMetadataRepository;
+import com.kenyajug.regression.logger.model.LogMetadata;
+import com.kenyajug.regression.logger.repository.LogMetadataRepository;
+
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,11 +14,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class LogsMetadataRepositoryTest {
+public class LogMetadataRepositoryTest {
     @Autowired
     private JdbcClient jdbcClient;
     @Autowired
-    private LogsMetadataRepository repository;
+    private LogMetadataRepository repository;
     private final String logId = "Root_log_UUID1";
     @AfterEach
     public void cleanUp(){
@@ -52,7 +29,7 @@ public class LogsMetadataRepositoryTest {
     }
     @Test
     public void shouldSaveObjectTest(){
-        var entity = new LogsMetadata(
+        var entity = new LogMetadata(
                 "UUID1",
                 logId,
                 "OS",
@@ -69,12 +46,12 @@ public class LogsMetadataRepositoryTest {
     }
     @Test
     public void shouldFindAllObjectsTest(){
-        var entity1 = new LogsMetadata(
+        var entity1 = new LogMetadata(
                 "UUID1",
                 logId,
                 "OS",
                 "Ubuntu Desktop 24.04.2 LTS");
-        var entity2 = new LogsMetadata(
+        var entity2 = new LogMetadata(
                 "UUID2",
                 logId,
                 "OS",
@@ -84,7 +61,7 @@ public class LogsMetadataRepositoryTest {
         var users = repository.findAll();
         assertThat(users).isNotEmpty();
         var persistedOptional = users.stream()
-                .sorted(Comparator.comparing(LogsMetadata::uuid))
+                .sorted(Comparator.comparing(LogMetadata::uuid))
                 .findFirst();
         assertThat(persistedOptional).isNotEmpty();
         var persisted = persistedOptional.get();
@@ -96,7 +73,7 @@ public class LogsMetadataRepositoryTest {
     }
     @Test
     public void shouldDeleteByIdTest(){
-        var entity = new LogsMetadata(
+        var entity = new LogMetadata(
                 "UUID1",
                 logId,
                 "OS",
@@ -113,12 +90,12 @@ public class LogsMetadataRepositoryTest {
     }
     @Test
     public void shouldDeleteAllObjectsTest(){
-        var entity1 = new LogsMetadata(
+        var entity1 = new LogMetadata(
                 "UUID1",
                 logId,
                 "OS",
                 "Ubuntu Desktop 24.04.2 LTS");
-        var entity2 = new LogsMetadata(
+        var entity2 = new LogMetadata(
                 "UUID2",
                 logId,
                 "OS",
@@ -128,7 +105,7 @@ public class LogsMetadataRepositoryTest {
         var entities = repository.findAll();
         assertThat(entities).isNotEmpty();
         var persistedOptional = entities.stream()
-                .sorted(Comparator.comparing(LogsMetadata::uuid))
+                .sorted(Comparator.comparing(LogMetadata::uuid))
                 .findFirst();
         assertThat(persistedOptional).isNotEmpty();
         var persisted = persistedOptional.get();
@@ -140,7 +117,7 @@ public class LogsMetadataRepositoryTest {
     }
     @Test
     public void shouldCheckObjectExistenceById_Test(){
-        var entity = new LogsMetadata(
+        var entity = new LogMetadata(
                 "UUID1",
                 logId,
                 "OS",
@@ -154,7 +131,7 @@ public class LogsMetadataRepositoryTest {
     }
     @Test
     public void shouldUpdateObjectTest(){
-        var entity = new LogsMetadata(
+        var entity = new LogMetadata(
                 "UUID1",
                 logId,
                 "OS",
@@ -162,7 +139,7 @@ public class LogsMetadataRepositoryTest {
         repository.save(entity);
         var exists = repository.existsById(entity.uuid());
         assertThat(exists).isTrue();
-        var entityUpdated = new LogsMetadata(
+        var entityUpdated = new LogMetadata(
                 "UUID1",
                 logId,
                 "OS",
@@ -179,12 +156,12 @@ public class LogsMetadataRepositoryTest {
     }
     @Test
     public void shouldFindLogsMetadataByParentLogTest(){
-        var entity1 = new LogsMetadata(
+        var entity1 = new LogMetadata(
                 "UUID1",
                 logId,
                 "OS",
                 "Ubuntu Desktop 24.04.2 LTS");
-        var entity2 = new LogsMetadata(
+        var entity2 = new LogMetadata(
                 "UUID2",
                 "LOG_UUID_2",
                 "OS",

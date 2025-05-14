@@ -1,6 +1,5 @@
-package com.kenyajug.regression.entities;
+package com.kenyajug.regression.logger.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /*
@@ -26,7 +25,7 @@ import java.time.LocalDateTime;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public record AppLog(
+public record Log(
         String uuid,
         LocalDateTime timestamp,
         String severity,

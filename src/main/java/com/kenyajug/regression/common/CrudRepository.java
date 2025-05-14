@@ -1,4 +1,4 @@
-package com.kenyajug.regression.repository;
+package com.kenyajug.regression.common;
 /*
  * MIT License
  *
@@ -26,14 +26,14 @@ package com.kenyajug.regression.repository;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
 /**
  * A generic CRUD (Create, Read, Update, Delete) repository interface
  * for performing basic database operations on any entity type.
  *
  * @param <T> the type of the entity managed by this repository
  */
-public sealed interface CrudRepository<T>
-        permits AppLogRepository, ApplicationsRepository, LogsMetadataRepository, UserRepository
+public interface CrudRepository<T>
 {
 
     /**

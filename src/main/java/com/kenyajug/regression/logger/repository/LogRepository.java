@@ -1,28 +1,6 @@
-package com.kenyajug.regression.repository;
-/*
- * MIT License
- *
- * Copyright (c) 2025 Kenya JUG
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-import com.kenyajug.regression.entities.AppLog;
+package com.kenyajug.regression.logger.repository;
+import com.kenyajug.regression.common.CrudRepository;
+import com.kenyajug.regression.logger.model.Log;
 import com.kenyajug.regression.utils.DateTimeUtils;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -31,10 +9,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 @Repository
-public non-sealed class AppLogRepository implements CrudRepository<AppLog>{
+public class LogRepository implements CrudRepository<Log>{
     private final JdbcClient jdbcClient;
     private final TransactionTemplate transactionTemplate;
-    public AppLogRepository(JdbcClient jdbcClient, TransactionTemplate transactionTemplate) {
+    public LogRepository(JdbcClient jdbcClient, TransactionTemplate transactionTemplate) {
         this.jdbcClient = jdbcClient;
         this.transactionTemplate = transactionTemplate;
     }
@@ -45,7 +23,7 @@ public non-sealed class AppLogRepository implements CrudRepository<AppLog>{
      * @param entity the entity to save (must not be {@code null})
      */
     @Override
-    public void save(AppLog entity) {
+    public void save(Log entity) {
         transactionTemplate.executeWithoutResult(status -> {
             var insertSql = """
                          INSERT INTO app_logs (
@@ -82,7 +60,7 @@ public non-sealed class AppLogRepository implements CrudRepository<AppLog>{
      * @return an {@link Optional} containing the found entity, or empty if not found
      */
     @Override
-    public Optional<AppLog> findById(String uuid) {
+    public Optional<Log> findById(String uuid) {
         var selectSql = """
                 SELECT * FROM app_logs
                 WHERE uuid = :uuid
@@ -90,7 +68,7 @@ public non-sealed class AppLogRepository implements CrudRepository<AppLog>{
                 """;
         return jdbcClient.sql(selectSql)
                 .param("uuid",uuid)
-                .query((resultSet, row) -> new AppLog(
+                .query((resultSet, row) -> new Log(
                         resultSet.getString("uuid"),
                         DateTimeUtils.convertZonedUTCTimeStringToLocalDateTime(resultSet.getString("timestamp")),
                         resultSet.getString("severity"),
@@ -106,13 +84,13 @@ public non-sealed class AppLogRepository implements CrudRepository<AppLog>{
      * @return a list of all entities; never {@code null}, but may be empty
      */
     @Override
-    public List<AppLog> findAll() {
+    public List<Log> findAll() {
         var selectSql = """
                 SELECT * FROM app_logs
                 ;
                 """;
         return jdbcClient.sql(selectSql)
-                .query((resultSet, row) -> new AppLog(
+                .query((resultSet, row) -> new Log(
                         resultSet.getString("uuid"),
                         DateTimeUtils.convertZonedUTCTimeStringToLocalDateTime(resultSet.getString("timestamp")),
                         resultSet.getString("severity"),
@@ -180,7 +158,7 @@ public non-sealed class AppLogRepository implements CrudRepository<AppLog>{
      * @throws NoSuchElementException   if no entity with the given {@code uuid} exists in the data source
      */
     @Override
-    public void updateById(String uuid, AppLog entity) throws NoSuchElementException {
+    public void updateById(String uuid, Log entity) throws NoSuchElementException {
         var updateSql = """
                 UPDATE app_logs
                 SET timestamp = :timestamp,

@@ -1,6 +1,5 @@
-package com.kenyajug.regression.entities;
+package com.kenyajug.regression.user;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /*
@@ -26,12 +25,11 @@ import java.time.LocalDateTime;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public record Application(
-       String uuid,
-       String name,
-       String appVersion,
-       String runtimeEnvironment,
-       String owner,
-       LocalDateTime createdAt
+public record User(
+        String uuid,
+        String username,
+        String password,
+        String roles_list_json,
+        LocalDateTime created_at
 ) {
 }
