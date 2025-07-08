@@ -53,7 +53,12 @@ https://github.com/user-attachments/assets/50589dbc-0b7f-4536-a047-e82c18b078d5
    ```bash
    mvn spring-boot:run
    ```
-   The server will start on `http://localhost:8080`
+   The server will start on `http://localhost:8080/regression`
+
+  - To access the dashboard use this credentials go to `http://127.0.0.1:8080/regression/login`
+  - use the default credentials  below
+  - username : `admin@regression.com`
+  - password : `admin123`
 
 ### Docker Deployment
 
@@ -193,17 +198,20 @@ Once the application is running, you can access the API documentation at:
 
 
 
+
+
+
 <!-- coverage start -->
 ## 📊 Code Coverage Report
 
-**Overall Coverage: 0% ✅**
+**Overall Coverage: 100.00% ✅**
 
 | Metric      | Covered | Missed | Total | Coverage |
 |-------------|---------|--------|--------|----------|
-| INSTRUCTION |  |  | 0 | 0% ✅ |
-| LINE |  |  | 0 | 0% ✅ |
-| BRANCH |  |  | 0 | 0% ✅ |
-| METHOD |  |  | 0 | 0% ✅ |
-| CLASS |  |  | 0 | 0% ✅ |
-| COMPLEXITY |  |  | 0 | 0% ✅ |
+| INSTRUCTION | 3559 | 0 | 3559 | 100.00% ✅ |
+| LINE | 868 | 0 | 868 | 100.00% ✅ |
+| BRANCH | 90 | 0 | 90 | 100.00% ✅ |
+| METHOD | 186 | 0 | 186 | 100.00% ✅ |
+| CLASS | 37 | 0 | 37 | 100.00% ✅ |
+| COMPLEXITY | 232 | 0 | 232 | 100.00% ✅ |
 <!-- coverage end -->
