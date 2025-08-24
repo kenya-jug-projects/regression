@@ -1,4 +1,4 @@
-package com.kenyajug;
+package com.kenyajug.platform;
 /*
  * MIT License
  *
@@ -22,7 +22,4 @@ package com.kenyajug;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class TargetPlatform {
-    private String uuid;
-    private String name;
-}
+public record TargetPlatform(String uuid,String name){}

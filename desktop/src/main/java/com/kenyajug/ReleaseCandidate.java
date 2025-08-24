@@ -1,47 +1,30 @@
-package com.lifeplanner.subscriptionservice.database.entities.hullplating;
-/**
- * Proprietary License Declaration
+package com.kenyajug;
+/*
+ * MIT License
  *
- * This code is provided under a Proprietary License by THE LIFE PLANNER LTD. This means that the code
- * is not open-source, and access to it is restricted to specific individuals or entities.
+ * Copyright (c) 2025 Kenya JUG
  *
- * Permissions:
- * 1. You are granted a non-exclusive, non-transferable license to use this code for your internal, non-commercial purposes only, upon purchase.
- * 2. You may not redistribute, sublicense, sell, or otherwise transfer any rights to this code without explicit written permission from the LIFE PLANNER LTD.
- * 3. You may not modify, create derivative works of, or reverse engineer this code.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * Ownership:
- * All rights, title, and interest in and to the code and any accompanying documentation remain with THE LIFE PLANNER LTD.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
  *
- * Warranty:
- * This code is provided "as is" without warranty of any kind. THE LIFE PLANNER LTD shall not be liable for any damages or liabilities arising from the use, misuse, or inability to use this code.
- *
- * For any inquiries regarding commercial licensing, customizations, or other permissions, please contact:
- *
- * THE LIFE PLANNER LTD
- * Email: support@thelifeplanner.co
- * Website: www.thelifeplanner.co
- *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@Entity
-public class ReleaseCandidate extends HPMetadata {
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Id
-    private String id;
-    private String platformId;
+public class ReleaseCandidate {
+    private String uuid;
+    private String platformUuid;
     private String versionLabel;
     private String releaseType;
 }
