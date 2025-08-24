@@ -1,4 +1,4 @@
-package com.kenyajug;
+package com.kenyajug.release;
 /*
  * MIT License
  *
@@ -22,9 +22,8 @@ package com.kenyajug;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class ReleaseCandidate {
-    private String uuid;
-    private String platformUuid;
-    private String versionLabel;
-    private String releaseType;
-}
+public record ReleaseCandidate(
+    String uuid,
+    String platformUuid,
+    String versionLabel,
+    String releaseType) {}

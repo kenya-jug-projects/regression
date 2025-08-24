@@ -1,5 +1,4 @@
 .idea
 .mvn
 target
-public_env.properties
 private_env.properties
