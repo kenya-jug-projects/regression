@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS FeatureQAPrompt (
     prompt TEXT NOT NULL,
     testInstructions TEXT NOT NULL,
     testOrder INTEGER,
-    createdDateUTC TEXT NOT NULL -- store DATETIME as ISO-8601 string
+    createdUTCDate TEXT NOT NULL -- store DATETIME as ISO-8601 string
 );
 -- Table: FeatureQAResult
 CREATE TABLE IF NOT EXISTS FeatureQAResult (

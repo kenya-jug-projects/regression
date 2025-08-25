@@ -2,3 +2,5 @@
 .mvn
 target
 private_env.properties
+regression_test_db
+regression_desk_db

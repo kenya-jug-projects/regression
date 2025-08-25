@@ -1,4 +1,4 @@
-package com.kenyajug;
+package com.kenyajug.feature;
 /*
  * MIT License
  *
@@ -22,7 +22,7 @@ package com.kenyajug;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import java.util.Date;
+import java.time.LocalDateTime;
 public record FeatureQAResult(
     String uuid,
     String qaPromptId,
@@ -30,4 +30,4 @@ public record FeatureQAResult(
     String releaseCandidateId,
     int result, // 1 = success 0 = failed
     String testNotes,
-    Date createdUTCDate) {}
+    LocalDateTime createdUTCDate) {}
