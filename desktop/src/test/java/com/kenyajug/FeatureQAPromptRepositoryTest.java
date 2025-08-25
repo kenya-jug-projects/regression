@@ -254,6 +254,37 @@ public class FeatureQAPromptRepositoryTest {
         assertThat(deleteResult.isSuccess()).isFalse();
         assertThat(deleteResult.message()).isEqualTo("Failed to delete, Prompt with this id does not exist");
     }
+    @Test
+    public void shouldFindByPlatformIdTest() throws SQLException, IOException {
+        var repository = new FeatureQAPromptRepository();
+        var uuid = "e72b0918-1b02-49e3-ba33-b3b03e01f323";
+        var platformId = "92e2d642-84f7-461c-9de2-6a58dd637fde";
+        var prompt = new FeatureQAPrompt(
+                uuid,
+                "Test Onboarding",
+                platformId,
+                "Did the app crash during onboarding?",
+                """
+                        1. Tap on app from home screen
+                        2. Wait for onboarding to launch
+                        3. Tap on next
+                        4. Wait for dashboard to load
+                        """,
+                2,
+                LocalDateTime.now()
+        );
+        var savedResult = repository.save(prompt);
+        assertThat(savedResult.isSuccess()).isTrue();
+        var actualPrompts = repository.findByPlatformId(platformId);
+        assertThat(actualPrompts).isNotEmpty();
+        assertThat(actualPrompts.size()).isEqualTo(1);
+        assertThat(actualPrompts.getFirst()).isNotNull();
+        assertThat(actualPrompts.getFirst().name()).isEqualTo(prompt.name());
+        assertThat(actualPrompts.getFirst().platformUuid()).isEqualTo(prompt.platformUuid());
+        assertThat(actualPrompts.getFirst().prompt()).isEqualTo(prompt.prompt());
+        assertThat(actualPrompts.getFirst().testInstructions()).isEqualTo(prompt.testInstructions());
+        assertThat(actualPrompts.getFirst().testOrder()).isEqualTo(prompt.testOrder());
+    }
     @AfterEach
     public void cleanUp() throws SQLException, IOException {
         DatabaseManager.clearDatabase();

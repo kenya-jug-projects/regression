@@ -212,6 +212,146 @@ public class FeatureQAResultRepositoryTest {
         assertThat(deleteResult.isSuccess()).isFalse();
         assertThat(deleteResult.message()).isEqualTo("Failed to delete, QA Result with this id does not exist");
     }
+    @Test
+    public void shouldCheckExistsTest() throws SQLException, IOException {
+        var repository = new FeatureQAResultRepository();
+        var resultId = "76066f68-9906-4475-b922-9409a0fb7aff";
+        var qAResult = new FeatureQAResult(
+                resultId,
+                "6d136998-215f-48f4-ad53-ee926090dc2b",
+                "7cbcdb9c-4d88-4a3c-a2ef-097f13d7a166",
+                "13b08276-8e47-49e2-881b-029f1e648cb9",
+                1,
+                "Found some intermittent problems! Working on reproducing!",
+                LocalDateTime.now()
+        );
+        var savedResult = repository.save(qAResult);
+        assertThat(savedResult.isSuccess()).isTrue();
+        var existsResult = repository.exists(resultId);
+        assertThat(existsResult).isNotNull();
+        assertThat(existsResult.isSuccess()).isTrue();
+        assertThat(existsResult.message()).isEqualTo("Feature QA Result with this id already exist");
+        assertThat(existsResult.data()).isTrue();
+    }
+    @Test
+    public void shouldCheckExists_Case1_DoesNotExist_Test() throws SQLException, IOException {
+        var repository = new FeatureQAResultRepository();
+        var resultId = "76066f68-9906-4475-b922-9409a0fb7aff";
+        var qAResult = new FeatureQAResult(
+                resultId,
+                "6d136998-215f-48f4-ad53-ee926090dc2b",
+                "7cbcdb9c-4d88-4a3c-a2ef-097f13d7a166",
+                "13b08276-8e47-49e2-881b-029f1e648cb9",
+                1,
+                "Found some intermittent problems! Working on reproducing!",
+                LocalDateTime.now()
+        );
+        var savedResult = repository.save(qAResult);
+        assertThat(savedResult.isSuccess()).isTrue();
+        var anotherId = "6ca9b718-566b-40f3-96a4-bf57d024bed9";
+        var existsResult = repository.exists(anotherId);
+        assertThat(existsResult).isNotNull();
+        assertThat(existsResult.isSuccess()).isTrue();
+        assertThat(existsResult.data()).isFalse();
+        assertThat(existsResult.message()).isEqualTo("Feature QA Result with this id does not exist");
+    }
+    @Test
+    public void shouldListByReleaseCandidatesTest() throws SQLException, IOException {
+        var repository = new FeatureQAResultRepository();
+        var releaseId = "6e1ddf7e-4450-439c-b41f-ea3b0823b9df";
+        var qAResult = new FeatureQAResult(
+                "ac42b9cd-ad93-426f-b2c7-4036bdede12a",
+                "6d136998-215f-48f4-ad53-ee926090dc2b",
+                "7cbcdb9c-4d88-4a3c-a2ef-097f13d7a166",
+                releaseId,
+                1,
+                "Found some intermittent problems! Working on reproducing!",
+                LocalDateTime.now()
+        );
+        var savedResult = repository.save(qAResult);
+        assertThat(savedResult.isSuccess()).isTrue();
+        var includeCompleted = true;
+        var results = repository.listByReleaseCandidate(releaseId,includeCompleted);
+        assertThat(results).isNotEmpty();
+        assertThat(results.getFirst()).isNotNull();
+        assertThat(results.getFirst().qaPromptId()).isEqualTo(qAResult.qaPromptId());
+        assertThat(results.getFirst().platformId()).isEqualTo(qAResult.platformId());
+        assertThat(results.getFirst().releaseCandidateId()).isEqualTo(qAResult.releaseCandidateId());
+        assertThat(results.getFirst().result()).isEqualTo(qAResult.result());
+        assertThat(results.getFirst().testNotes()).isEqualTo(qAResult.testNotes());
+    }
+    @Test
+    public void shouldListByReleaseCandidates_Case1_Test() throws SQLException, IOException {
+        var repository = new FeatureQAResultRepository();
+        var releaseId = "6e1ddf7e-4450-439c-b41f-ea3b0823b9df";
+        var qAResult = new FeatureQAResult(
+                "ac42b9cd-ad93-426f-b2c7-4036bdede12a",
+                "6d136998-215f-48f4-ad53-ee926090dc2b",
+                "7cbcdb9c-4d88-4a3c-a2ef-097f13d7a166",
+                releaseId,
+                1,
+                "Found some intermittent problems! Working on reproducing!",
+                LocalDateTime.now()
+        );
+        var qAResultPending = new FeatureQAResult(
+                "39cd134e-9b7c-48fc-bd7c-3bcccd5f2ad8",
+                "6d136998-215f-48f4-ad53-ee926090dc2b",
+                "7cbcdb9c-4d88-4a3c-a2ef-097f13d7a166",
+                releaseId,
+                0,
+                "Working on reproducing!",
+                LocalDateTime.now()
+        );
+        var savedResult = repository.save(qAResult);
+        assertThat(savedResult.isSuccess()).isTrue();
+        var savedResult2 = repository.save(qAResultPending);
+        assertThat(savedResult2.isSuccess()).isTrue();
+        var includeCompleted = false;
+        var results = repository.listByReleaseCandidate(releaseId,includeCompleted);
+        assertThat(results).isNotEmpty();
+        assertThat(results.getFirst()).isNotNull();
+        assertThat(results.getFirst().qaPromptId()).isEqualTo(qAResultPending.qaPromptId());
+        assertThat(results.getFirst().platformId()).isEqualTo(qAResultPending.platformId());
+        assertThat(results.getFirst().releaseCandidateId()).isEqualTo(qAResultPending.releaseCandidateId());
+        assertThat(results.getFirst().result()).isEqualTo(qAResultPending.result());
+        assertThat(results.getFirst().testNotes()).isEqualTo(qAResultPending.testNotes());
+    }
+    @Test
+    public void shouldListByReleaseCandidates_Case2_Test() throws SQLException, IOException {
+        var repository = new FeatureQAResultRepository();
+        var releaseId = "6e1ddf7e-4450-439c-b41f-ea3b0823b9df";
+        var qAResultCompleted = new FeatureQAResult(
+                "ac42b9cd-ad93-426f-b2c7-4036bdede12a",
+                "6d136998-215f-48f4-ad53-ee926090dc2b",
+                "7cbcdb9c-4d88-4a3c-a2ef-097f13d7a166",
+                releaseId,
+                1,
+                "Found some intermittent problems! Working on reproducing!",
+                LocalDateTime.now()
+        );
+        var qAResultPending = new FeatureQAResult(
+                "39cd134e-9b7c-48fc-bd7c-3bcccd5f2ad8",
+                "6d136998-215f-48f4-ad53-ee926090dc2b",
+                "7cbcdb9c-4d88-4a3c-a2ef-097f13d7a166",
+                releaseId,
+                0,
+                "Working on reproducing!",
+                LocalDateTime.now()
+        );
+        var savedResult = repository.save(qAResultCompleted);
+        assertThat(savedResult.isSuccess()).isTrue();
+        var savedResult2 = repository.save(qAResultPending);
+        assertThat(savedResult2.isSuccess()).isTrue();
+        var includeCompleted = true;
+        var results = repository.listByReleaseCandidate(releaseId,includeCompleted);
+        assertThat(results).isNotEmpty();
+        assertThat(results.getFirst()).isNotNull();
+        assertThat(results.getFirst().qaPromptId()).isEqualTo(qAResultCompleted.qaPromptId());
+        assertThat(results.getFirst().platformId()).isEqualTo(qAResultCompleted.platformId());
+        assertThat(results.getFirst().releaseCandidateId()).isEqualTo(qAResultCompleted.releaseCandidateId());
+        assertThat(results.getFirst().result()).isEqualTo(qAResultCompleted.result());
+        assertThat(results.getFirst().testNotes()).isEqualTo(qAResultCompleted.testNotes());
+    }
     @AfterEach
     public void cleanUp() throws SQLException, IOException {
         DatabaseManager.clearDatabase();

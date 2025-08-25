@@ -39,12 +39,12 @@ public class ReleaseCandidateRepositoryTest {
     @Test
     public void shouldSaveReleaseCandidateTest() throws IOException, SQLException {
         var repository = new ReleaseCandidateRepository();
-        var platform = new ReleaseCandidate(
+        var release = new ReleaseCandidate(
                 "22fe7bf5-8294-4222-8538-e8a755c19ffd",
                 "ea80e600-d902-4e5b-bf40-f51263ad8744",
                 "1.1.43453.beta",
                 "beta");
-        var savedResult = repository.save(platform);
+        var savedResult = repository.save(release);
         assertThat(savedResult.isSuccess()).isTrue();
         assertThat(savedResult.message()).isEqualTo("New release candidate saved successfully!");
     }
@@ -102,7 +102,7 @@ public class ReleaseCandidateRepositoryTest {
     @Test
     public void shouldNotUpdateCandidate_IfNotExists_Test() throws SQLException, IOException {
         var repository = new ReleaseCandidateRepository();
-        var platform = new ReleaseCandidate(
+        var release = new ReleaseCandidate(
                 "22fe7bf5-8294-4222-8538-e8a755c19ffd",
                 "ea80e600-d902-4e5b-bf40-f51263ad8744",
                 "1.1.43453.beta",
@@ -112,7 +112,7 @@ public class ReleaseCandidateRepositoryTest {
                 "ea80e600-d902-4e5b-bf40-f51263ad8744",
                 "1.1.43453.beta",
                 "beta");
-        var savedResult = repository.save(platform);
+        var savedResult = repository.save(release);
         assertThat(savedResult.isSuccess()).isTrue();
         var updatedCandidate = new ReleaseCandidate(staleCandidate.uuid(),
                 "ea80e600-d902-4e5b-bf40-f51263ad8744",
@@ -126,21 +126,21 @@ public class ReleaseCandidateRepositoryTest {
         assertThat(updatedCandidates.size()).isEqualTo(1);
         var updatedEntity = updatedCandidates.getFirst();
         assertThat(updatedEntity).isNotNull();
-        assertThat(updatedEntity.uuid()).isEqualTo(platform.uuid());
-        assertThat(updatedEntity.platformUuid()).isEqualTo(platform.platformUuid());
-        assertThat(updatedEntity.versionLabel()).isEqualTo(platform.versionLabel());
-        assertThat(updatedEntity.releaseType()).isEqualTo(platform.releaseType());
+        assertThat(updatedEntity.uuid()).isEqualTo(release.uuid());
+        assertThat(updatedEntity.platformUuid()).isEqualTo(release.platformUuid());
+        assertThat(updatedEntity.versionLabel()).isEqualTo(release.versionLabel());
+        assertThat(updatedEntity.releaseType()).isEqualTo(release.releaseType());
     }
     @Test
     public void shouldDeleteCandidateTest() throws IOException, SQLException {
         var repository = new ReleaseCandidateRepository();
         var uuid = "e72b0918-1b02-49e3-ba33-b3b03e01f323";
-        var platform = new ReleaseCandidate(
+        var release = new ReleaseCandidate(
                 uuid,
                 "ea80e600-d902-4e5b-bf40-f51263ad8744",
                 "1.1.43453.beta",
                 "beta");
-        var savedResult = repository.save(platform);
+        var savedResult = repository.save(release);
         assertThat(savedResult.isSuccess()).isTrue();
         var deleteResult = repository.delete(uuid);
         assertThat(deleteResult).isNotNull();
@@ -152,17 +152,59 @@ public class ReleaseCandidateRepositoryTest {
         var repository = new ReleaseCandidateRepository();
         var uuid = "e72b0918-1b02-49e3-ba33-b3b03e01f323";
         var incorrectUuid = "weird-evil-uuid";
-        var platform = new ReleaseCandidate(
+        var release = new ReleaseCandidate(
                 uuid,
                 "ea80e600-d902-4e5b-bf40-f51263ad8744",
                 "1.1.43453.beta",
                 "beta");
-        var savedResult = repository.save(platform);
+        var savedResult = repository.save(release);
         assertThat(savedResult.isSuccess()).isTrue();
         var deleteResult = repository.delete(incorrectUuid);
         assertThat(deleteResult).isNotNull();
         assertThat(deleteResult.isSuccess()).isFalse();
         assertThat(deleteResult.message()).isEqualTo("Failed to delete.A release candidate with this id does not exist");
+    }
+    @Test
+    public void shouldFindByPlatformIdTest() throws SQLException, IOException {
+        var repository = new ReleaseCandidateRepository();
+        var platformId = "ea80e600-d902-4e5b-bf40-f51263ad8744";
+        var release = new ReleaseCandidate(
+                "e72b0918-1b02-49e3-ba33-b3b03e01f323",
+                platformId,
+                "1.1.43453.beta",
+                "beta");
+        var savedResult = repository.save(release);
+        assertThat(savedResult.isSuccess()).isTrue();
+        var releases = repository.findByPlatformId(platformId);
+        assertThat(releases).isNotEmpty();
+        assertThat(releases.size()).isEqualTo(1);
+        assertThat(releases.getFirst()).isNotNull();
+        assertThat(releases.getFirst().uuid()).isEqualTo(release.uuid());
+        assertThat(releases.getFirst().platformUuid()).isEqualTo(platformId);
+        assertThat(releases.getFirst().versionLabel()).isEqualTo(release.versionLabel());
+        assertThat(releases.getFirst().releaseType()).isEqualTo(release.releaseType());
+    }
+    @Test
+    public void shouldFindByPlatformIdCase1Test() throws SQLException, IOException {
+        var repository = new ReleaseCandidateRepository();
+        var platformId = "ea80e600-d902-4e5b-bf40-f51263ad8744";
+        var releases = repository.findByPlatformId(platformId);
+        assertThat(releases).isEmpty();
+    }
+    @Test
+    public void shouldFindByPlatformIdCase2Test() throws SQLException, IOException {
+        var repository = new ReleaseCandidateRepository();
+        var platformId = "ea80e600-d902-4e5b-bf40-f51263ad8744";
+        var release = new ReleaseCandidate(
+                "e72b0918-1b02-49e3-ba33-b3b03e01f323",
+                platformId,
+                "1.1.43453.beta",
+                "beta");
+        var savedResult = repository.save(release);
+        assertThat(savedResult.isSuccess()).isTrue();
+        var anotherPlatformId = "6590d190-4f04-41b2-a815-92fb6d823eb3";
+        var releases = repository.findByPlatformId(anotherPlatformId);
+        assertThat(releases).isEmpty();
     }
     @AfterEach
     public void cleanUp() throws SQLException, IOException {

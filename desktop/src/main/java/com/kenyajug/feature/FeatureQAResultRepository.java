@@ -24,10 +24,12 @@ package com.kenyajug.feature;
  */
 import com.kenyajug.core.DatabaseManager;
 import com.kenyajug.core.DateTimeManager;
+import com.kenyajug.core.OpDataResult;
 import com.kenyajug.core.OpResult;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,6 +146,77 @@ public class FeatureQAResultRepository {
             deleteStatement.setString(1,uuid);
             deleteStatement.execute();
             return new OpResult(true,"QA Result is permanently deleted!");
+        }
+    }
+    public OpDataResult<Boolean> exists(String uuid) throws IOException,SQLException {
+        var url = DatabaseManager.fetchDatabaseUrl();
+        try(Connection connection = DriverManager.getConnection(url)){
+            var checkSql = """
+                    SELECT COUNT(*) FROM FeatureQAResult
+                    WHERE
+                    uuid = ?
+                    """;
+            var countStatement = connection.prepareStatement(checkSql);
+            countStatement.setString(1,uuid);
+            var countResult = countStatement.executeQuery();
+            if (countResult.next()){
+                var isNotPresent = countResult.getLong(1) < 1;
+                if (isNotPresent)
+                    return new OpDataResult<>(
+                            true,
+                            "Feature QA Result with this id does not exist",
+                            false);
+                else
+                    return new OpDataResult<>(
+                            true,
+                            "Feature QA Result with this id already exist",
+                            true);
+            } else
+                return new OpDataResult<>(
+                        false,
+                        "Check Failed!, Couldn't determine if QA result exist",
+                        false);
+        }
+    }
+    public List<FeatureQAResult> listByReleaseCandidate(String releaseId, boolean includeCompleted)
+            throws IOException, SQLException {
+        var url = DatabaseManager.fetchDatabaseUrl();
+        try(Connection connection = DriverManager.getConnection(url)){
+            PreparedStatement statement;
+            if (includeCompleted) {
+                var sql = """
+                    SELECT * FROM FeatureQAResult
+                    WHERE
+                    releaseCandidateId = ?
+                    """;
+                statement = connection.prepareStatement(sql);
+                statement.setString(1,releaseId);
+            } else {
+                var sql = """
+                    SELECT * FROM FeatureQAResult
+                    WHERE
+                    releaseCandidateId = ?
+                    AND
+                    result = ?
+                    """;
+                statement = connection.prepareStatement(sql);
+                statement.setString(1,releaseId);
+                statement.setInt(2,0);
+            }
+            var resultSet = statement.executeQuery();
+            List<FeatureQAResult> results = new ArrayList<>();
+            while (resultSet.next()){
+                var qaResult = new FeatureQAResult(
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getInt(5),
+                        resultSet.getString(6),
+                        DateTimeManager.dateTextToUTCTimestamp(resultSet.getString(7)));
+                results.add(qaResult);
+            }
+            return results;
         }
     }
 }

@@ -84,7 +84,9 @@ public class ReleaseCandidateRepository {
             }
             var sql = """
                     UPDATE ReleaseCandidate SET
-                    platformUuid = ?, versionLabel = ?, releaseType = ?
+                    platformUuid = ?,
+                    versionLabel = ?,
+                    releaseType = ?
                     WHERE uuid = ?
                     """;
             var updateStatement = connection.prepareStatement(sql);
@@ -119,6 +121,30 @@ public class ReleaseCandidateRepository {
             deleteStatement.setString(1,uuid);
             deleteStatement.execute();
             return new OpResult(true,"Release candidate is permanently deleted!");
+        }
+    }
+    public List<ReleaseCandidate> findByPlatformId(String platformUuid) throws IOException, SQLException {
+        var url = DatabaseManager.fetchDatabaseUrl();
+        try(Connection connection = DriverManager.getConnection(url)){
+            var byPlatformIdSql = """
+                    SELECT * FROM ReleaseCandidate
+                    WHERE
+                    platformUuid = ?
+                    """;
+            var statement = connection.prepareStatement(byPlatformIdSql);
+            statement.setString(1,platformUuid);
+            var result = statement.executeQuery();
+            List<ReleaseCandidate> releases = new ArrayList<>();
+            while (result.next()){
+                var release = new ReleaseCandidate(
+                        result.getString(1),
+                        result.getString(2),
+                        result.getString(3),
+                        result.getString(4)
+                );
+                releases.add(release);
+            }
+            return releases;
         }
     }
 }

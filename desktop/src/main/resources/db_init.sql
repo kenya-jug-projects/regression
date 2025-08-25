@@ -30,3 +30,6 @@ CREATE TABLE IF NOT EXISTS ReleaseCandidate (
     versionLabel TEXT NOT NULL,
     releaseType TEXT -- Can be beta, production, staging
 );
+-- Table: ReleaseCandidate : Add index on platformUuid
+CREATE INDEX IF NOT EXISTS idx_release_candidate_platformUuid
+ON ReleaseCandidate (platformUuid);

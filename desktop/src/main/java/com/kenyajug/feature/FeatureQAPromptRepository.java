@@ -140,4 +140,31 @@ public class FeatureQAPromptRepository {
             return new OpResult(true,"Prompt is permanently deleted!");
         }
     }
+    public List<FeatureQAPrompt> findByPlatformId(String platformId) throws IOException, SQLException{
+        var url = DatabaseManager.fetchDatabaseUrl();
+        try(Connection connection = DriverManager.getConnection(url)){
+            var sql = """
+                    SELECT * FROM FeatureQAPrompt
+                    WHERE
+                    platformUuid = ?
+                    """;
+            var statement = connection.prepareStatement(sql);
+            statement.setString(1,platformId);
+            var result = statement.executeQuery();
+            List<FeatureQAPrompt> prompts = new ArrayList<>();
+            while (result.next()){
+                var prompt = new FeatureQAPrompt(
+                        result.getString(1),
+                        result.getString(2),
+                        result.getString(3),
+                        result.getString(4),
+                        result.getString(5),
+                        result.getInt(6),
+                        DateTimeManager.dateTextToUTCTimestamp(result.getString(7))
+                );
+                prompts.add(prompt);
+            }
+            return prompts;
+        }
+    }
 }
