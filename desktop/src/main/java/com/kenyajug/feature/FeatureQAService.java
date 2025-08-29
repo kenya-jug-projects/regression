@@ -30,8 +30,6 @@ import com.kenyajug.release.ReleaseCandidateRepository;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Locale;
-
 public class FeatureQAService {
     private final TargetPlatformRepository platformRepository;
     private final ReleaseCandidateRepository releasesRepository;

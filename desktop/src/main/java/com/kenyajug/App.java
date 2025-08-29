@@ -22,8 +22,20 @@ package com.kenyajug;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class App {
+import com.kenyajug.dashboard.AppDashboardView;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+public class App extends Application {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        launch(args);
+    }
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        var scene = new Scene(new AppDashboardView(),1200,800);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Regression");
+        primaryStage.setIconified(true);
+        primaryStage.show();
     }
 }
